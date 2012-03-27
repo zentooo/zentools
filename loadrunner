@@ -1,0 +1,82 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+use Plack::App::Directory;
+use Plack::Loader;
+use Getopt::Long;
+use Pod::Usage;
+
+
+sub load_plack {
+    my ($app, $host, $port, $reload) = @_;
+
+    Plack::Loader->auto(
+        host => $host,
+        port => $port,
+        reload => $reload,
+    )->run($app);
+}
+
+
+my ($hosts, $ports, $exec, $reload);
+
+GetOptions(
+    'host|h=s@' => \$hosts,
+    'port|p=s@' => \$ports,
+    'exec|e=s'  => \$exec,
+    'reload|r'  => \$reload,
+     help    => sub { pod2usage(0) },
+);
+
+die "no hosts given" if ! defined $hosts || scalar @$hosts < 1;
+die "no ports given" if ! defined $ports || scalar @$ports < 1;
+die "hosts num and ports num not match" if scalar @$hosts != scalar @$ports;
+
+my $app_file = shift;
+
+$exec ||= 'Plack::App::Directory->new(root => "./")->to_app';
+my $app = $app_file ? do $app_file : eval "$exec";
+
+if ( scalar @$hosts == 1 ) {
+    load_plack($app, $hosts->[0], $ports->[0], $reload);
+}
+
+for (my $i = 1; $i < scalar @$hosts; ++$i ) {
+    my $pid = fork;
+
+    if ( $pid ) {
+        load_plack($app, $hosts->[0], $ports->[0], $reload)
+            if $i == scalar @$hosts - 1;
+    }
+    else {
+        load_plack($app, $hosts->[$i], $ports->[$i], $reload);
+    }
+}
+
+__END__
+
+=head1 NAME
+
+loadrunner - run multiple httpd with different host and port pairs
+
+=head1 SYNOPSIS
+
+loadrunner [options]
+
+=head1 OPTIONS
+
+=head2 -h, --host
+
+one of hosts
+
+=head2 -p, --port
+
+one of ports
+
+=head2 -r, --reload
+
+reload if file changes
+
+=cut

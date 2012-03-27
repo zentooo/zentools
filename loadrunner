@@ -30,9 +30,12 @@ GetOptions(
      help    => sub { pod2usage(0) },
 );
 
-die "no hosts given" if ! defined $hosts || scalar @$hosts < 1;
-die "no ports given" if ! defined $ports || scalar @$ports < 1;
-die "hosts num and ports num not match" if scalar @$hosts != scalar @$ports;
+die "no hosts given"
+    if ! defined $hosts;
+die "no ports given"
+    if ! defined $ports;
+die "hosts num and ports num not match"
+    if scalar @$hosts != scalar @$ports;
 
 my $app_file = shift;
 

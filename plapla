@@ -62,11 +62,11 @@ __END__
 
 =head1 NAME
 
-loadrunner - run multiple same httpd with different host and port pairs
+plapla - run multiple same httpd with different host and port pairs
 
 =head1 SYNOPSIS
 
-loadrunner [options]
+plapla [options]
 
 =head1 OPTIONS
 

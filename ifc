@@ -1,0 +1,9 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+my ($filename, $basename) = ($ARGV[0], $ARGV[0]);
+$basename =~ s/(?:\.(\w+))$//;
+
+system(sprintf("watcher --dir %s -- prove -lvc %s", $basename, $filename));

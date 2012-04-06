@@ -11,6 +11,7 @@ requires 'Pod::Usage';
 test_requires 'Test::More' => 0.88;
 
 install_script 'plapla';
+install_script 'ifc';
 
 auto_include;
 auto_install;

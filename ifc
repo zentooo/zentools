@@ -3,7 +3,9 @@
 use strict;
 use warnings;
 
-my ($filename, $basename) = ($ARGV[0], $ARGV[0]);
-$basename =~ s/(?:\.(\w+))$//;
+use File::Basename;
 
-system(sprintf("watcher --dir %s -- prove -lvc %s", $basename, $filename));
+my $filename = $ARGV[0];
+my $dirname = dirname($filename);
+
+system(sprintf("watcher --dir %s -- prove -lvc %s", $dirname, $filename));
